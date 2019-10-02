@@ -18,21 +18,21 @@ public class SpookyBlockEntities {
 		SpookyBlocks.TINY_PUMPKIN,
 		SpookyBlocks.WITCHED_PUMPKIN
 	);
-	
+
 	public static final BlockEntityType<SpookyTreasureChestBlockEntity> SPOOKY_TREASURE_CHEST_BE = register(
 		"spooky_treasure_chest",
 		SpookyTreasureChestBlockEntity::new,
 		SpookyBlocks.SPOOKY_TREASURE_CHEST
 	);
-	
+
 	private SpookyBlockEntities() {
 		// NO-OP
 	}
-	
+
 	public static void init() {
 		// NO-OP
 	}
-	
+
 	private static <B extends BlockEntity> BlockEntityType<B> register(String name, Supplier<B> supplier, Block... supportedBlocks) {
 		return Registry.register(Registry.BLOCK_ENTITY, SpookyTime.id(name), BlockEntityType.Builder.create(supplier, supportedBlocks).build(null));
 	}

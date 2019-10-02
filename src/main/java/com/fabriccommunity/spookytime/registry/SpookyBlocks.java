@@ -55,27 +55,27 @@ public class SpookyBlocks {
 	public static final Block SPOOKY_CACTUS = register("spooky_cactus", new SpookyCactusBlock(FabricBlockSettings.copy(Blocks.CACTUS).materialColor(MaterialColor.BROWN).build()), new Item.Settings().group(SpookyTime.GROUP));
 	public static final Block DEADER_BUSH = register("deader_bush", new DeaderBushBlock(FabricBlockSettings.copy(Blocks.DEAD_BUSH).materialColor(MaterialColor.BROWN).build()), new Item.Settings().group(SpookyTime.GROUP));
 	public static final Block BREAD_CRUMBS = register("bread_crumbs", new BreadCrumbsBlock(FabricBlockSettings.of(Material.CAKE).breakByHand(true).collidable(false).noCollision().build()), new Item.Settings().group(SpookyTime.GROUP).food(new FoodComponent.Builder().hunger(1).saturationModifier(0.1f).snack().build()));
-	
+
 	private SpookyBlocks() {
 		// NO-OP
 	}
-	
+
 	public static void init() {
-	
+
 	}
-	
+
 	static <T extends Block> T register(String name, T block, Item.Settings settings) {
 		return register(name, block, new BlockItem(block, settings));
 	}
-	
+
 	static <T extends Block> T register(String name, T block) {
 		return register(name, block, new Item.Settings().group(SpookyTime.GROUP));
 	}
-	
+
 	static <T extends Block> T register(String name, T block, Function<T, BlockItem> itemFactory) {
 		return register(name, block, itemFactory.apply(block));
 	}
-	
+
 	static <T extends Block> T register(String name, T block, BlockItem item) {
 		T b = Registry.register(Registry.BLOCK, SpookyTime.id(name), block);
 		if (item != null) {

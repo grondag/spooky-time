@@ -30,13 +30,14 @@ public class SpookyTimeClient implements ClientModInitializer {
 		EntityRendererRegistry.INSTANCE.register(CrowEntity.class, (dispatcher, context) -> new CrowEntityRenderer(dispatcher));
 		EntityRendererRegistry.INSTANCE.register(SpookyTreasureChestEntity.class, ((dispatcher, context) -> new SpookyTreasureChestEntityRenderer(dispatcher)));
 		EntityRendererRegistry.INSTANCE.register(SpookyCactusEntity.class, (dispatcher, context) -> new SpookyCactusEntityRenderer(dispatcher));
-		
+
 		BlockEntityRendererRegistry.INSTANCE.register(TinyPumpkinBlockEntity.class, new TinyPumpkinRenderer());
 		BlockEntityRendererRegistry.INSTANCE.register(SpookyTreasureChestBlockEntity.class, new SpookyTreasureChestBlockEntityRenderer());
-		
+
 		SpookyColors.init();
 		SpookyClientNetworking.init();
-		
+
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new FluidResourceLoader());
+		SpookyModels.init();
 	}
 }
