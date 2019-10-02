@@ -23,13 +23,12 @@ public class SpookyTime implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		SpookyConfig.sync(false);
-		SpookyEntities.init();
 		SpookyBlocks.init();
+		SpookyEntities.init();
 		SpookyItems.init();
 		SpookyBlockEntities.init();
 		SpookyEnchantments.init();
 		SpookyCommands.init();
-		SpookyFeatures.init();
 		SpookyBiomes.init();
 		SpookyWorldGen.init();
 		SpookyDimensions.init();

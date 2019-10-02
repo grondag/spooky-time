@@ -59,30 +59,38 @@ public class SpookyBlocks {
 	public static Block SPOOKIUM_BLOCK = register("spookium_block", new Block(FabricBlockSettings.copy(Blocks.IRON_BLOCK).materialColor(MaterialColor.RED).build()), new Item.Settings().group(SpookyTime.GROUP).rarity(Rarity.EPIC));
 	public static Block WITCH_WATER_BLOCK = register("witch_water", new WitchWaterBlock(SpookyFluids.WITCH_WATER, FabricBlockSettings.copy(Blocks.WATER).build()), (BlockItem) null);
 	public static Block BLOOD_BLOCK = register("blood", new BloodBlock(SpookyFluids.BLOOD, FabricBlockSettings.copy(Blocks.LAVA).lightLevel(0).build()), (BlockItem) null);
-	
+
+	public static Block HAUNTED_SAPLING = register("haunted_sapling",
+			new HauntedSaplingBlock(FabricBlockSettings.of(Material.PLANT).noCollision().ticksRandomly().breakInstantly().sounds(BlockSoundGroup.GRASS).build()));
+	public static Block HAUNTED_TREE_HEART = register("haunted_tree_heart", new HauntedTreeHeartBlock());
+	public static Block MIASMA_BLOCK = register("miasma", new MiasmaBlock());
+	public static Block HAUNTED_LOG = register("haunted_log", new HauntedLogBlock.Height());
+	public static Block HAUNTED_LOG_CHANNEL = register("haunted_log_channel", new HauntedLogBlock.Height());
+	public static Block HAUNTED_LOG_TERMINAL = register("haunted_log_terminal", new HauntedLogBlock());
+
 	public static Block SPOOKY_CACTUS = register("spooky_cactus", new SpookyCactusBlock(FabricBlockSettings.copy(Blocks.CACTUS).materialColor(MaterialColor.BROWN).build()), new Item.Settings().group(SpookyTime.GROUP));
 	public static Block DEADER_BUSH = register("deader_bush", new DeaderBushBlock(FabricBlockSettings.copy(Blocks.DEAD_BUSH).materialColor(MaterialColor.BROWN).build()), new Item.Settings().group(SpookyTime.GROUP));
 
 	private SpookyBlocks() {
 		// NO-OP
 	}
-	
+
 	public static void init() {
-	
+
 	}
-	
+
 	static <T extends Block> T register(String name, T block, Item.Settings settings) {
 		return register(name, block, new BlockItem(block, settings));
 	}
-	
+
 	static <T extends Block> T register(String name, T block) {
 		return register(name, block, new Item.Settings().group(SpookyTime.GROUP));
 	}
-	
+
 	static <T extends Block> T register(String name, T block, Function<T, BlockItem> itemFactory) {
 		return register(name, block, itemFactory.apply(block));
 	}
-	
+
 	static <T extends Block> T register(String name, T block, BlockItem item) {
 		T b = Registry.register(Registry.BLOCK, SpookyTime.id(name), block);
 		if (item != null) {

@@ -1,0 +1,28 @@
+{
+	"replace": false,
+	"values": [
+		"spookytime:deceased_dirt",
+		"spookytime:deceased_grass_block",
+		"spookytime:tainted_sand",
+		"spookytime:tainted_gravel",
+		"minecraft:dirt",
+		"minecraft:grass_block",
+		"minecraft:podzol",
+		"minecraft:coarse_dirt",
+		"minecraft:mycelium",
+		"#minecraft:small_flowers",
+		"minecraft:sand",
+		"minecraft:red_sand",
+		"minecraft:gravel",
+		"minecraft:brown_mushroom",
+		"minecraft:red_mushroom",
+		"minecraft:cactus",
+		"minecraft:clay",
+		"minecraft:pumpkin",
+		"minecraft:carved_pumpkin",
+		"minecraft:melon",
+		"minecraft:mycelium",
+		"minecraft:netherrack",
+		"minecraft:vine"
+	]
+}

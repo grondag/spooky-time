@@ -9,6 +9,7 @@ import com.fabriccommunity.spookytime.world.feature.SpookyCactusFeature;
 import com.fabriccommunity.spookytime.world.feature.WitchWellFeature;
 
 import net.minecraft.block.Blocks;
+
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -23,7 +24,7 @@ public class SpookyFeatures {
     public static final TernarySurfaceConfig GHASTLY_DESERT = new TernarySurfaceConfig(SpookyBlocks.TAINTED_SAND.getDefaultState(), SpookyBlocks.TAINTED_SAND.getDefaultState(), SpookyBlocks.TAINTED_GRAVEL.getDefaultState());
 
 	public static final Feature<DefaultFeatureConfig> PUMPKIN = register("pumpkin", new DeceasedWildCropFeature(DefaultFeatureConfig::deserialize, Blocks.PUMPKIN.getDefaultState()));
-	
+
     public static final Feature<DefaultFeatureConfig> SPOOKY_CACTUS = register("spooky_cactus", new SpookyCactusFeature(DefaultFeatureConfig::deserialize));
     public static final Feature<DefaultFeatureConfig> DEADER_BUSH = register("deader_bush", new DeaderBushFeature(DefaultFeatureConfig::deserialize));
 
@@ -35,7 +36,7 @@ public class SpookyFeatures {
     public static void init() {
 
     }
-    
+
     public static <C extends FeatureConfig, F extends Feature<C>> F register(String name, F feature) {
         return Registry.register(Registry.FEATURE, SpookyTime.id(name), feature);
     }
