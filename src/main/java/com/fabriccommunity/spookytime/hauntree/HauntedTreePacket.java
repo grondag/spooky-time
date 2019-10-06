@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.network;
+package com.fabriccommunity.spookytime.hauntree;
 
 import com.fabriccommunity.spookytime.SpookyTime;
 

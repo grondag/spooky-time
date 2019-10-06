@@ -15,10 +15,6 @@ import net.minecraft.util.math.MathHelper;
 
 public class SpookyModels {
 	public static void init() {
-		register("haunted_log", new SimpleUnbakedModel(HauntedLogModel::create, HauntedLogModel.TEXTURES));
-		register("haunted_log_channel", new SimpleUnbakedModel(HauntedLogChannel::create, HauntedLogChannel.CHANNEL_TEXTURES));
-		register("haunted_log_terminal", new SimpleUnbakedModel(HauntedLogTerminal::create, HauntedLogTerminal.TERMINAL_TEXTURES));
-
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> ((modelId, context) -> {
 			if (modelId.getNamespace().equals(SpookyTime.MOD_ID)) {
 				return models.get(modelId.getPath());
