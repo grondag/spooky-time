@@ -1,10 +1,10 @@
-package com.fabriccommunity.spookytime.client.model;
+package com.fabriccommunity.spookytime.hauntree;
 
 import java.util.List;
 import java.util.function.Function;
 
 import com.fabriccommunity.spookytime.SpookyTime;
-import com.fabriccommunity.spookytime.block.HauntedLogBlock;
+import com.fabriccommunity.spookytime.client.model.SpookyModels;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -74,7 +74,7 @@ public class HauntedLogTerminal extends HauntedLogModel {
 		qe.emit();
 	}
 	
-	static HauntedLogTerminal create(Function<Identifier, Sprite> spriteMap) {
+	public static HauntedLogTerminal create(Function<Identifier, Sprite> spriteMap) {
         final Sprite sprite = spriteMap.apply(TERMINAL_TEXTURES.get(0));
         final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         final RenderMaterial mat = renderer.materialFinder().emissive(0, true).disableAo(0, true).disableDiffuse(0, true).find();

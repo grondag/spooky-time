@@ -1,7 +1,8 @@
 package com.fabriccommunity.spookytime.registry;
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import java.util.function.Function;
 
+import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
@@ -68,7 +69,7 @@ public class SpookyBlocks {
 		return register(name, block, new BlockItem(block, settings));
 	}
 
-	static <T extends Block> T register(String name, T block) {
+	public static <T extends Block> T register(String name, T block) {
 		return register(name, block, new Item.Settings().group(SpookyTime.GROUP));
 	}
 

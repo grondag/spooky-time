@@ -1,8 +1,6 @@
-package com.fabriccommunity.spookytime.block;
+package com.fabriccommunity.spookytime.hauntree;
 
 import java.util.Random;
-
-import com.fabriccommunity.spookytime.feature.HauntedTreeFeature;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

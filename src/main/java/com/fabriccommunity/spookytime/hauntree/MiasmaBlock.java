@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.block;
+package com.fabriccommunity.spookytime.hauntree;
 
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;

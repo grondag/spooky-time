@@ -7,6 +7,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import com.fabriccommunity.spookytime.hauntree.Hauntree;
 import com.fabriccommunity.spookytime.registry.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,5 +38,7 @@ public class SpookyTime implements ModInitializer {
 		SpookyFluidTags.init();
 		SpookyTags.init();
 		SpookyNetworking.init();
+		
+		Hauntree.init();
 	}
 }

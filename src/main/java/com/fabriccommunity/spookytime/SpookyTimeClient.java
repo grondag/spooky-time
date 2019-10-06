@@ -39,5 +39,7 @@ public class SpookyTimeClient implements ClientModInitializer {
 
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new FluidResourceLoader());
 		SpookyModels.init();
+
+		HauntreeClient.init();
 	}
 }

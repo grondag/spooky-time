@@ -1,9 +1,10 @@
-package com.fabriccommunity.spookytime.client.model;
+package com.fabriccommunity.spookytime.hauntree;
 
 import java.util.List;
 import java.util.function.Function;
 
 import com.fabriccommunity.spookytime.SpookyTime;
+import com.fabriccommunity.spookytime.client.model.SpookyModels;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -66,8 +67,8 @@ public class HauntedLogChannel extends HauntedLogModel {
 		qe.emit();
 	}
 	
-	static HauntedLogChannel create(Function<Identifier, Sprite> spriteMap) {
-        final Sprite sprite = spriteMap.apply(SpookyTime.id("block/haunted_log_core_0_0"));
+	public static HauntedLogChannel create(Function<Identifier, Sprite> spriteMap) {
+        final Sprite sprite = spriteMap.apply(CHANNEL_TEXTURES.get(0));
         final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         final RenderMaterial mat = renderer.materialFinder().emissive(0, true).disableAo(0, true).disableDiffuse(0, true).find();
         final MeshBuilder mb = renderer.meshBuilder();

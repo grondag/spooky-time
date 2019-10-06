@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.client.model;
+package com.fabriccommunity.spookytime.hauntree;
 
 import java.util.List;
 import java.util.Random;
@@ -6,7 +6,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.fabriccommunity.spookytime.SpookyTime;
-import com.fabriccommunity.spookytime.block.HauntedLogBlock;
+import com.fabriccommunity.spookytime.client.model.SimpleModel;
+import com.fabriccommunity.spookytime.client.model.SpookyModels;
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.HashCommon;
@@ -93,7 +94,7 @@ public class HauntedLogModel extends SimpleModel {
 		qe.emit();
 	}
 
-	static HauntedLogModel create(Function<Identifier, Sprite> spriteMap) {
+	public static HauntedLogModel create(Function<Identifier, Sprite> spriteMap) {
 		final Sprite sprite = spriteMap.apply(TEXTURES.get(0));
 		final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 		final RenderMaterial mat = renderer.materialFinder().emissive(0, true).disableAo(0, true).disableDiffuse(0, true).find();

@@ -1,6 +1,4 @@
-package com.fabriccommunity.spookytime.block;
-
-import com.fabriccommunity.spookytime.entity.HauntedTreeHeartBlockEntity;
+package com.fabriccommunity.spookytime.hauntree;
 
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tools.FabricToolTags;

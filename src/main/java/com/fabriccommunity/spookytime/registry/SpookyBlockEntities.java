@@ -1,15 +1,15 @@
 package com.fabriccommunity.spookytime.registry;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.registry.Registry;
+import java.util.function.Supplier;
 
 import com.fabriccommunity.spookytime.SpookyTime;
 import com.fabriccommunity.spookytime.block.entity.TinyPumpkinBlockEntity;
 import com.fabriccommunity.spookytime.entity.SpookyTreasureChestBlockEntity;
 
-import java.util.function.Supplier;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.registry.Registry;
 
 public class SpookyBlockEntities {
 	public static final BlockEntityType<TinyPumpkinBlockEntity> TINY_PUMPKIN = register(
