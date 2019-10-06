@@ -3,23 +3,24 @@ package com.fabriccommunity.spookytime.doomtree.heart;
 import java.util.Random;
 
 import com.fabriccommunity.spookytime.doomtree.DoomTree;
-import com.fabriccommunity.spookytime.doomtree.DoomTreePacket;
 
-import io.netty.util.internal.ThreadLocalRandom;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
-import net.minecraft.block.BlockState;
+import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
-
+	int tickCounter = 100;
+	long[] logs = null;
+	long[] branches = null;
+	long power = 1000;
+	
 	Job job = null;
+	final BlockPos.Mutable mPos = new BlockPos.Mutable();
+	
+	final LongArrayFIFOQueue logQueue = new LongArrayFIFOQueue();
 
 	public DoomTreeHeartBlockEntity(BlockEntityType<?> entityType) {
 		super(entityType);
@@ -29,78 +30,33 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 		this(DoomTree.HAUNTED_TREE);
 	}
 
-	int tickCounter = 100;
-	long[] logs = null;
-	long[] branches = null;
-
 	@Override
 	public void tick() {
-		if (this.world == null || this.logs == null || this.world.isClient) {
+		if (world == null || logs == null || world.isClient) {
 			return;
 		}
 
+		++power;
+		--tickCounter;
+		
 		if (job == null) {
 			idle();
 		} else {
-			--tickCounter;
 			job = job.apply(this);
 		}
 	}
 
 	void idle() {
-		if (--tickCounter <= 0) {
-			Random r = ThreadLocalRandom.current();
-			if (placeMiasma(r)) {
-				// TODO: bump up
-				tickCounter = r.nextInt(20);
-			}
+		if (power >= 100 && !logQueue.isEmpty()) {
+			job = Jobs.place(this);
+		} else if (--tickCounter <= 0) {
+			job = MiasmaJob.run(this);
 		}
 	}
-
-	final BlockPos.Mutable mPos = new BlockPos.Mutable();
-	static BlockState MIASMA_STATE = DoomTree.MIASMA_BLOCK.getDefaultState();
-
-
-	boolean placeMiasma(Random r) {
-		final BlockPos pos = this.pos;
-
-		final int x = pos.getX();
-		final int y = pos.getY();
-		final int z = pos.getZ();
-
-		final int dx = (int) (r.nextGaussian() * 24);
-		final int dz = (int) (r.nextGaussian() * 24);
-		final int dy = (int) (r.nextGaussian() * 24);
-
-		if (dx * dx + dy * dy + dz * dz > 24 * 24) return false;
-
-		boolean result = placeMiasma(mPos.set(x + dx, y + dy, z + dz), r, false);
-		result |= placeMiasma(mPos.set(x + dx + 1, y + dy, z + dz), r, result);
-		result |= placeMiasma(mPos.set(x + dx - 1, y + dy, z + dz), r, result);
-		result |= placeMiasma(mPos.set(x + dx, y + dy + 1, z + dz), r, result);
-		result |= placeMiasma(mPos.set(x + dx, y + dy - 1, z + dz), r, result);
-		result |= placeMiasma(mPos.set(x + dx, y + dy, z + dz + 1), r, result);
-		result |= placeMiasma(mPos.set(x + dx, y + dy, z + dz - 1), r, result);
-
-		return result;
+	
+	void resetTickCounter(Random r) {
+		tickCounter = r.nextInt(20);
 	}
-
-	boolean placeMiasma(BlockPos pos, Random r, boolean smokeDone) {
-		if (World.isValid(pos) && world.isBlockLoaded(mPos) && world.isAir(pos)) {
-			world.setBlockState(pos, MIASMA_STATE);
-			if (!smokeDone) {
-				final Packet<?> packet = DoomTreePacket.misama(pos);
-				PlayerStream.around(world, pos, 32).forEach(p -> 
-				ServerSidePacketRegistry.INSTANCE.sendToPlayer(p, packet));
-			}
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	static final String LOG_KEY = "logPositions";
-	static final String BRANCH_KEY = "branchPositions";
 
 	void setTemplate(long[] blocks) {
 		this.logs = blocks;
@@ -109,22 +65,28 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 		this.markDirty();
 	}
 
+	static final String LOG_KEY = "logPositions";
+	static final String BRANCH_KEY = "branchPositions";
+	static final String POWER_KEY = "power";
+	
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
+		power = tag.getLong(POWER_KEY);
 		logs = tag.containsKey(LOG_KEY) ? tag.getLongArray(LOG_KEY) : null;
 		branches = tag.containsKey(BRANCH_KEY) ? tag.getLongArray(BRANCH_KEY) : null;
 
-		if (logs != null && branches == null) {
-			job = new BuilderJob(this);
+		if (logs != null) {
+			job = branches == null ? new BuilderJob(this) : new LogCheckJob(this);
 		}
 	}
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
 		tag = super.toTag(tag);
-
+		tag.putLong(POWER_KEY, power);
+		
 		if (logs != null) {
 			tag.putLongArray(LOG_KEY, logs);
 

@@ -2,6 +2,7 @@ package com.fabriccommunity.spookytime.doomtree.heart;
 
 import java.util.Random;
 
+import com.fabriccommunity.spookytime.doomtree.DoomLogBlock;
 import com.fabriccommunity.spookytime.doomtree.DoomTree;
 
 import it.unimi.dsi.fastutil.HashCommon;
@@ -11,6 +12,7 @@ import net.minecraft.block.Material;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 
 class TreeBuilder {
@@ -151,5 +153,26 @@ class TreeBuilder {
 
 	static int centerHeight(BlockPos pos) {
 		return MAX_GEN_HEIGHT - ((int) HashCommon.mix(pos.asLong()) & 0x7);
+	}
+	
+	static final BlockState LOG_STATE = DoomTree.DOOM_LOG.getDefaultState();
+	static final BlockState CHANNEL_STATE = DoomTree.DOOM_LOG_CHANNEL.getDefaultState();
+	static final BlockState TERMINAL_STATE = DoomTree.DOOM_LOG_TERMINAL.getDefaultState();
+	
+	static BlockState logState(BlockPos pos,DoomTreeHeartBlockEntity heart) {
+		final BlockPos heartPos = heart.getPos();
+		final int dy = pos.getY() - heart.getPos().getY();
+		final int x  = heartPos.getX();
+		final int z = heartPos.getZ();
+		
+		if (pos.getX() == x && Math.abs(pos.getZ() - z) == 1 || pos.getZ() == z && Math.abs(pos.getX() - x) == 1) {
+			if (dy >= 0 && dy < DoomLogBlock.TERMINAL_HEIGHT) {
+				return CHANNEL_STATE.with(DoomLogBlock.HEIGHT, MathHelper.clamp(dy, 0, DoomLogBlock.MAX_HEIGHT));
+			} else if (dy == DoomLogBlock.TERMINAL_HEIGHT) {
+				return TERMINAL_STATE;
+			}
+		} 
+		
+		return LOG_STATE.with(DoomLogBlock.HEIGHT, MathHelper.clamp(dy, 0, DoomLogBlock.MAX_HEIGHT));
 	}
 }

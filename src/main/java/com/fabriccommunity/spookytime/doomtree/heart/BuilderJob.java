@@ -71,7 +71,7 @@ class BuilderJob implements Job {
 
 			heart.branches = blocks.toLongArray();
 			heart.markDirty();
-			return new PlacerJob(heart);
+			return new LogCheckJob(heart);
 		} else {
 			return this;
 		}
