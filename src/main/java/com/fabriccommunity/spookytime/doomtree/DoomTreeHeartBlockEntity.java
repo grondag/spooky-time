@@ -1,14 +1,14 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
-import static com.fabriccommunity.spookytime.hauntree.TreeBuilder.POINTS;
-import static com.fabriccommunity.spookytime.hauntree.TreeBuilder.POINT_COUNT;
-import static com.fabriccommunity.spookytime.hauntree.TreeBuilder.canReplace;
-import static com.fabriccommunity.spookytime.hauntree.TreeBuilder.placeBranch;
+import static com.fabriccommunity.spookytime.doomtree.TreeBuilder.POINTS;
+import static com.fabriccommunity.spookytime.doomtree.TreeBuilder.POINT_COUNT;
+import static com.fabriccommunity.spookytime.doomtree.TreeBuilder.canReplace;
+import static com.fabriccommunity.spookytime.doomtree.TreeBuilder.placeBranch;
 
 import java.util.Random;
 
-import com.fabriccommunity.spookytime.hauntree.TreeBuilder.BranchPoint;
-import com.fabriccommunity.spookytime.hauntree.TreeBuilder.PositionCollector;
+import com.fabriccommunity.spookytime.doomtree.TreeBuilder.BranchPoint;
+import com.fabriccommunity.spookytime.doomtree.TreeBuilder.PositionCollector;
 
 import io.netty.util.internal.ThreadLocalRandom;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -25,21 +25,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable {
+public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 
 	@FunctionalInterface
 	private static interface Job {
-		Job apply(HauntedTreeHeartBlockEntity heart);
+		Job apply(DoomTreeHeartBlockEntity heart);
 	}
 
 	protected Job job = null;
 
-	public HauntedTreeHeartBlockEntity(BlockEntityType<?> entityType) {
+	public DoomTreeHeartBlockEntity(BlockEntityType<?> entityType) {
 		super(entityType);
 	}
 
-	public HauntedTreeHeartBlockEntity() {
-		this(Hauntree.HAUNTED_TREE);
+	public DoomTreeHeartBlockEntity() {
+		this(DoomTree.HAUNTED_TREE);
 	}
 
 	protected int tickCounter = 100;
@@ -71,7 +71,7 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 	}
 
 	final BlockPos.Mutable mPos = new BlockPos.Mutable();
-	private static BlockState MIASMA_STATE = Hauntree.MIASMA_BLOCK.getDefaultState();
+	private static BlockState MIASMA_STATE = DoomTree.MIASMA_BLOCK.getDefaultState();
 
 
 	protected boolean placeMiasma(Random r) {
@@ -102,7 +102,7 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 		if (World.isValid(pos) && world.isBlockLoaded(mPos) && world.isAir(pos)) {
 			world.setBlockState(pos, MIASMA_STATE);
 			if (!smokeDone) {
-				final Packet<?> packet = HauntedTreePacket.misama(pos);
+				final Packet<?> packet = DoomTreePacket.misama(pos);
 				PlayerStream.around(world, pos, 32).forEach(p -> 
 				ServerSidePacketRegistry.INSTANCE.sendToPlayer(p, packet));
 			}
@@ -161,9 +161,9 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 		final Random rand = new Random();
 		final int centerHeight;
 
-		int h = HauntedLogBlock.TERMINAL_HEIGHT + 1;
+		int h = DoomLogBlock.TERMINAL_HEIGHT + 1;
 
-		Builder (HauntedTreeHeartBlockEntity heart) {
+		Builder (DoomTreeHeartBlockEntity heart) {
 			final BlockPos pos = heart.pos;
 			x = pos.getX();
 			y = pos.getY();
@@ -181,7 +181,7 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 		}
 
 		@Override
-		public Job apply(HauntedTreeHeartBlockEntity heart) {
+		public Job apply(DoomTreeHeartBlockEntity heart) {
 			BranchPoint point = points.get(rand.nextInt(points.size()));
 
 			while (point == lastPoint ) {
@@ -221,14 +221,14 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 		final int y;
 		final int z;
 		final BlockPos.Mutable mPos = new BlockPos.Mutable();
-		final BlockState logState = Hauntree.HAUNTED_LOG.getDefaultState();
-		final BlockState channelState = Hauntree.HAUNTED_LOG_CHANNEL.getDefaultState();
-		final BlockState terminalState = Hauntree.HAUNTED_LOG_TERMINAL.getDefaultState();
+		final BlockState logState = DoomTree.DOOM_LOG.getDefaultState();
+		final BlockState channelState = DoomTree.DOOM_LOG_CHANNEL.getDefaultState();
+		final BlockState terminalState = DoomTree.DOOM_LOG_TERMINAL.getDefaultState();
 		final LongArrayList blocks;
 		int index = 0;
 		final int limit;
 		
-		public Placer(HauntedTreeHeartBlockEntity heart) {
+		public Placer(DoomTreeHeartBlockEntity heart) {
 			final BlockPos pos = heart.pos;
 			x = pos.getX();
 			y = pos.getY();
@@ -240,7 +240,7 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 		}
 
 		@Override
-		public Job apply(HauntedTreeHeartBlockEntity heart) {
+		public Job apply(DoomTreeHeartBlockEntity heart) {
 			if (index < limit) {
 				final long p = blocks.getLong(index++);
 				mPos.set(p);
@@ -250,15 +250,15 @@ public class HauntedTreeHeartBlockEntity extends BlockEntity implements Tickable
 					BlockState state = null;
 
 					if (mPos.getX() == x && Math.abs(mPos.getZ() - z) == 1 || mPos.getZ() == z && Math.abs(mPos.getX() - x) == 1) {
-						if (dy >= 0 && dy < HauntedLogBlock.TERMINAL_HEIGHT) {
-							state = channelState.with(HauntedLogBlock.HEIGHT, MathHelper.clamp(dy, 0, HauntedLogBlock.MAX_HEIGHT));
-						} else if (dy == HauntedLogBlock.TERMINAL_HEIGHT) {
+						if (dy >= 0 && dy < DoomLogBlock.TERMINAL_HEIGHT) {
+							state = channelState.with(DoomLogBlock.HEIGHT, MathHelper.clamp(dy, 0, DoomLogBlock.MAX_HEIGHT));
+						} else if (dy == DoomLogBlock.TERMINAL_HEIGHT) {
 							state = terminalState;
 						}
 					} 
 					
 					if (state == null) {
-						state = logState.with(HauntedLogBlock.HEIGHT, MathHelper.clamp(dy, 0, HauntedLogBlock.MAX_HEIGHT));
+						state = logState.with(DoomLogBlock.HEIGHT, MathHelper.clamp(dy, 0, DoomLogBlock.MAX_HEIGHT));
 					}
 
 					heart.world.setBlockState(mPos.set(p), state, 18);

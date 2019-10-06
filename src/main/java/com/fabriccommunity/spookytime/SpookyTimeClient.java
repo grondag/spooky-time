@@ -2,11 +2,13 @@ package com.fabriccommunity.spookytime;
 
 import com.fabriccommunity.spookytime.block.entity.TinyPumpkinBlockEntity;
 import com.fabriccommunity.spookytime.client.SpookyColors;
+import com.fabriccommunity.spookytime.client.model.SpookyModels;
 import com.fabriccommunity.spookytime.client.SpookyClientNetworking;
 import com.fabriccommunity.spookytime.client.FluidResourceLoader;
 import com.fabriccommunity.spookytime.client.render.PumpcownEntityRenderer;
 import com.fabriccommunity.spookytime.client.render.SpookyCactusEntityRenderer;
 import com.fabriccommunity.spookytime.client.render.TinyPumpkinRenderer;
+import com.fabriccommunity.spookytime.doomtree.DoomTreeClient;
 import com.fabriccommunity.spookytime.entity.PumpcownEntity;
 import com.fabriccommunity.spookytime.entity.SpookyCactusEntity;
 
@@ -29,6 +31,6 @@ public class SpookyTimeClient implements ClientModInitializer {
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new FluidResourceLoader());
 		SpookyModels.init();
 
-		HauntreeClient.init();
+		DoomTreeClient.init();
 	}
 }

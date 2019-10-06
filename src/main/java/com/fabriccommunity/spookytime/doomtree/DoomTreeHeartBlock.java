@@ -1,10 +1,10 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -13,15 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-public class HauntedTreeHeartBlock extends BlockWithEntity {
+public class DoomTreeHeartBlock extends BlockWithEntity {
 
-	public HauntedTreeHeartBlock() {
-		super(FabricBlockSettings.of(Material.WOOD).dropsNothing().breakByTool(FabricToolTags.AXES, 3).strength(50.0F, 1200.0F).build());
+	public DoomTreeHeartBlock(Block.Settings settings) {
+		super(settings);
 	}
 
 	@Override
 	public BlockEntity createBlockEntity(BlockView var1) {
-		return new HauntedTreeHeartBlockEntity();
+		return new DoomTreeHeartBlockEntity();
 	}
 
 	@Override
@@ -37,5 +37,10 @@ public class HauntedTreeHeartBlock extends BlockWithEntity {
 		}
 
 		return super.calcBlockBreakingDelta(blockState, player, blockView, pos);
+	}
+
+	@Override
+	public BlockRenderType getRenderType(BlockState blockState_1) {
+		return BlockRenderType.MODEL;
 	}
 }

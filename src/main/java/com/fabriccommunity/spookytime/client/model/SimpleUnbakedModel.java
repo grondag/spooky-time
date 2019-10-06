@@ -13,9 +13,11 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 
+/** Can be used for multiple blocks - will return same baked model for each */
 public class SimpleUnbakedModel implements UnbakedModel {
     final Function<Function<Identifier, Sprite>, BakedModel> baker;
     final List<Identifier> sprites;
+    BakedModel baked = null;
     
     public SimpleUnbakedModel(Function<Function<Identifier, Sprite>, BakedModel> baker, List<Identifier> sprites) {
         this.baker = baker;
@@ -34,6 +36,11 @@ public class SimpleUnbakedModel implements UnbakedModel {
 
 	@Override
 	public BakedModel bake(ModelLoader modelLoader, Function<Identifier, Sprite> spriteLoader, ModelBakeSettings bakeSettings) {
-		return baker.apply(spriteLoader);
+		BakedModel result = baked;
+		if (result == null) {
+			result = baker.apply(spriteLoader);
+			baked = result;
+		}
+		return result;
 	}
 }
