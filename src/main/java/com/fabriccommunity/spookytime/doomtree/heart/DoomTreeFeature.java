@@ -1,9 +1,9 @@
-package com.fabriccommunity.spookytime.doomtree;
+package com.fabriccommunity.spookytime.doomtree.heart;
 
 import java.util.Random;
 import java.util.function.Function;
 
-import com.fabriccommunity.spookytime.doomtree.TreeBuilder.PositionCollector;
+import com.fabriccommunity.spookytime.doomtree.DoomTree;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.block.entity.BlockEntity;

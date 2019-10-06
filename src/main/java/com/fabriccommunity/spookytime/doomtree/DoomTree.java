@@ -1,6 +1,9 @@
 package com.fabriccommunity.spookytime.doomtree;
 
 import com.fabriccommunity.spookytime.SpookyTime;
+import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeFeature;
+import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeHeartBlock;
+import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeHeartBlockEntity;
 import com.fabriccommunity.spookytime.registry.SpookyBlocks;
 import com.fabriccommunity.spookytime.registry.SpookyFeatures;
 

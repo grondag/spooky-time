@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.doomtree;
+package com.fabriccommunity.spookytime.doomtree.heart;
 
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.Block;
