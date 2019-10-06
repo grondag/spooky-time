@@ -1,9 +1,9 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
 import java.util.Random;
 import java.util.function.Function;
 
-import com.fabriccommunity.spookytime.hauntree.TreeBuilder.PositionCollector;
+import com.fabriccommunity.spookytime.doomtree.TreeBuilder.PositionCollector;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -14,8 +14,8 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
-public class HauntedTreeFeature extends Feature<DefaultFeatureConfig> {
-	public HauntedTreeFeature(Function<Dynamic<?>, ? extends DefaultFeatureConfig> func, boolean flag) {
+public class DoomTreeFeature extends Feature<DefaultFeatureConfig> {
+	public DoomTreeFeature(Function<Dynamic<?>, ? extends DefaultFeatureConfig> func, boolean flag) {
 		super(func, flag);
 	}
 
@@ -28,11 +28,11 @@ public class HauntedTreeFeature extends Feature<DefaultFeatureConfig> {
 			return false;
 		}
 
-		world.setBlockState(posIn, Hauntree.HAUNTED_TREE_HEART.getDefaultState(), 3);
+		world.setBlockState(posIn, DoomTree.DOOM_TREE_HEART.getDefaultState(), 3);
 		final BlockEntity be = world.getBlockEntity(posIn);
 
-		if (be != null && be instanceof HauntedTreeHeartBlockEntity) {
-			HauntedTreeHeartBlockEntity heart = (HauntedTreeHeartBlockEntity) be;
+		if (be != null && be instanceof DoomTreeHeartBlockEntity) {
+			DoomTreeHeartBlockEntity heart = (DoomTreeHeartBlockEntity) be;
 			blocks.sort((l0, l1) -> Integer.compare(BlockPos.unpackLongY(l0), BlockPos.unpackLongY(l1)));
 			heart.setTemplate(blocks.toLongArray());
 		}

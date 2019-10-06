@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
 import java.util.Random;
 
@@ -11,9 +11,9 @@ import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 @Environment(EnvType.CLIENT)
-public class HauntedTreePacketHandler {
+public class DoomTreePacketHandler {
 	public static void accept(PacketContext context, PacketByteBuf buffer) {
-		HauntedTreePacket packet = buffer.readEnumConstant(HauntedTreePacket.class);
+		DoomTreePacket packet = buffer.readEnumConstant(DoomTreePacket.class);
 		
 		switch (packet) {
 		case MIASMA:

@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
 import java.util.Comparator;
 import java.util.Random;
@@ -26,10 +26,10 @@ public class TreeBuilder {
 				|| blockState.matches(BlockTags.LEAVES)
 				|| blockState.getMaterial() == Material.REPLACEABLE_PLANT
 				|| Block.isNaturalStone(block)
-				|| block.matches(Hauntree.BLOCK_TROLL_WHITELIST)
+				|| block.matches(DoomTree.DOOM_TREE_WHITELIST)
 				|| block.matches(BlockTags.LOGS)
 				|| block.matches(BlockTags.SAPLINGS)
-				|| block == Hauntree.MIASMA_BLOCK;
+				|| block == DoomTree.MIASMA_BLOCK;
 	}
 
 	public static class BranchPoint {

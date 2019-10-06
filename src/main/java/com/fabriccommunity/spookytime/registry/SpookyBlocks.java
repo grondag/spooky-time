@@ -1,8 +1,7 @@
 package com.fabriccommunity.spookytime.registry;
 
-import java.util.function.Function;
-
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;

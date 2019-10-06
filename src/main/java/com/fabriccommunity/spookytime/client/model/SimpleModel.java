@@ -43,17 +43,15 @@ import net.minecraft.world.World;
 /**
  * Simple baked model supporting the Fabric Render API features.<p>
  */
-public class SimpleModel extends AbstractModel {
-    protected final Mesh mesh;
+public abstract class SimpleModel extends AbstractModel {
+    protected Mesh mesh = null;
     protected WeakReference<List<BakedQuad>[]> quadLists = null;
     protected final ItemProxy itemProxy = new ItemProxy();
     
     public SimpleModel(
-            Mesh mesh,
             Sprite sprite,
             ModelTransformation transformation) {
         super(sprite, transformation);
-        this.mesh = mesh;
     }
     
     @Override
@@ -61,11 +59,24 @@ public class SimpleModel extends AbstractModel {
         return false;
     }
     
+    protected abstract Mesh createMesh();
+    
+    protected Mesh mesh() {
+    	Mesh result = mesh;
+    	
+    	if (result == null) {
+    		result = createMesh();
+    		mesh = result;
+    	}
+    	
+    	return result;
+    }
+    
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random rand) {
         List<BakedQuad>[] lists = quadLists == null ? null : quadLists.get();
         if(lists == null) {
-            lists = ModelHelper.toQuadLists(this.mesh);
+            lists = ModelHelper.toQuadLists(mesh());
             quadLists = new WeakReference<>(lists);
         }
         List<BakedQuad> result = lists[face == null ? 6 : face.getId()];
@@ -74,9 +85,7 @@ public class SimpleModel extends AbstractModel {
     
     @Override
     public void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        if(mesh != null) {
-            context.meshConsumer().accept(mesh);
-        }
+        context.meshConsumer().accept(mesh());
     }
     
     @Override
@@ -97,8 +106,6 @@ public class SimpleModel extends AbstractModel {
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        if(mesh != null) {
-            context.meshConsumer().accept(mesh);
-        }
+        context.meshConsumer().accept(mesh());
     }
 }

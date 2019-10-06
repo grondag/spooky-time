@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
 import java.util.Random;
 
@@ -23,12 +23,12 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 
-public class HauntedSaplingBlock extends PlantBlock implements Fertilizable {
+public class DoomSaplingBlock extends PlantBlock implements Fertilizable {
 	public static final IntProperty STAGE = Properties.STAGE;
 	protected static final VoxelShape SHAPE = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D);
 
 
-	public HauntedSaplingBlock(Block.Settings settings) {
+	public DoomSaplingBlock(Block.Settings settings) {
 		super(settings);
 		setDefaultState(stateFactory.getDefaultState().with(STAGE, 0));
 	}
@@ -75,7 +75,7 @@ public class HauntedSaplingBlock extends PlantBlock implements Fertilizable {
 	}
 
 	private boolean generateInner(IWorld world, BlockPos pos, BlockState blockState, Random random) {
-		Feature<DefaultFeatureConfig> feature = new HauntedTreeFeature(DefaultFeatureConfig::deserialize, true);
+		Feature<DefaultFeatureConfig> feature = new DoomTreeFeature(DefaultFeatureConfig::deserialize, true);
 		world.setBlockState(pos, Blocks.AIR.getDefaultState(), 4);
 
 		if (feature.generate(world, world.getChunkManager().getChunkGenerator(), random, pos, FeatureConfig.DEFAULT)) {

@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.hauntree;
+package com.fabriccommunity.spookytime.doomtree;
 
 import com.fabriccommunity.spookytime.SpookyTime;
 
@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
-public enum HauntedTreePacket {
+public enum DoomTreePacket {
 	MIASMA;
 	
 	private PacketByteBuf newBuffer() {
@@ -24,5 +24,5 @@ public enum HauntedTreePacket {
 		  return ServerSidePacketRegistry.INSTANCE.toPacket(IDENTIFIER, buf);
 	}
 	
-	public static Identifier IDENTIFIER = new Identifier(SpookyTime.MOD_ID + ":haunted_tree");
+	public static Identifier IDENTIFIER = new Identifier(SpookyTime.MOD_ID + ":doom_tree");
 }

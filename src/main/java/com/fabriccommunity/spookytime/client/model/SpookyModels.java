@@ -5,12 +5,9 @@ import java.util.HashMap;
 import com.fabriccommunity.spookytime.SpookyTime;
 
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class SpookyModels {
@@ -28,56 +25,6 @@ public class SpookyModels {
 
 	public static void register(String id, UnbakedModel unbakedModel) {
 		models.put(id, unbakedModel);
-	}
-
-	public static void box(
-			QuadEmitter qe,
-			RenderMaterial material, 
-			int color, Sprite sprite,
-			float minX, float minY, float minZ, 
-			float maxX, float maxY, float maxZ) {
-
-		qe.material(material)
-			.square(Direction.UP, minX, minZ, maxX, maxZ, 1-maxY)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit()
-	
-			.material(material)
-			.square(Direction.DOWN, minX, minZ, maxX, maxZ, minY)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit()
-	
-			.material(material)
-			.square(Direction.EAST, minZ, minY, maxZ, maxY, 1-maxX)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit()
-	
-			.material(material)
-			.square(Direction.WEST, minZ, minY, maxZ, maxY, minX)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit()
-	
-			.material(material)
-			.square(Direction.SOUTH, minX, minY, maxX, maxY, 1-maxZ)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit()
-	
-			.material(material)
-			.square(Direction.NORTH, minX, minY, maxX, maxY, minZ)
-			.spriteColor(0, color, color, color, color)
-			.spriteUnitSquare(0)
-			.spriteBake(0, sprite, MutableQuadView.BAKE_NORMALIZED)
-			.emit();
 	}
 	
     /**
