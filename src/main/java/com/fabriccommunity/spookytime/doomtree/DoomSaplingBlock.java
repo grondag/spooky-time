@@ -2,6 +2,8 @@ package com.fabriccommunity.spookytime.doomtree;
 
 import java.util.Random;
 
+import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeFeature;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
