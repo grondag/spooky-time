@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
@@ -40,13 +41,18 @@ public class DoomTree {
 	public static Block DOOM_LOG_TERMINAL = Registry.register(Registry.BLOCK, SpookyTime.id("doom_log_terminal"), 
 			new DoomLogBlock(logSettings().dropsLike(PLACED_DOOM_LOG_TERMINAL).build(), false, 0.02f));
 
-
+	public static Block DOOMED_LOG = SpookyBlocks.register("doomed_log", new PillarBlock(doomedSettings()));
+	public static Block DOOMED_EARTH = SpookyBlocks.register("doomed_earth", new Block(doomedSettings()));
+	public static Block DOOMED_STONE = SpookyBlocks.register("doomed_stone", new Block(doomedSettings()));
+	
 	public static final BlockEntityType<DoomTreeHeartBlockEntity> HAUNTED_TREE = 
 			Registry.register(Registry.BLOCK_ENTITY, SpookyTime.id("doom_tree"), BlockEntityType.Builder.create(DoomTreeHeartBlockEntity::new, DOOM_TREE_HEART).build(null));
 
 	public static Feature<DefaultFeatureConfig> DOOM_TREE_FEATURE = SpookyFeatures.register("doom_tree", new DoomTreeFeature(DefaultFeatureConfig::deserialize, false)); 
 
 	public static Tag<Block> DOOM_TREE_WHITELIST = TagRegistry.block(SpookyTime.id("doom_tree_whitelist"));
+	
+	public static Tag<Block> DOOM_TREE_IGNORED = TagRegistry.block(SpookyTime.id("doom_tree_ignored"));
 
 	public static void init() {
 
@@ -55,4 +61,9 @@ public class DoomTree {
 	private static FabricBlockSettings logSettings() {
 		return FabricBlockSettings.of(Material.WOOD).breakByTool(FabricToolTags.AXES, 2).strength(3.0F, 20.0F);
 	}
+	
+	private static Block.Settings doomedSettings() {
+		return FabricBlockSettings.of(Material.EARTH).breakByHand(true).breakInstantly().dropsNothing().sounds(BlockSoundGroup.SAND).build();
+	}
 }
+

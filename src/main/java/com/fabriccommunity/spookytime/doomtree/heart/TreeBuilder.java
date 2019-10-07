@@ -19,7 +19,10 @@ class TreeBuilder {
 	static final int MAX_GEN_HEIGHT = 48;
 
 	static boolean canReplace(IWorld world, BlockPos pos) {
-		BlockState blockState = world.getBlockState(pos);
+		return canReplace(world.getBlockState(pos));
+	}
+		
+	static boolean canReplace(BlockState blockState) {
 		Block block = blockState.getBlock();
 
 		return blockState.isAir()
