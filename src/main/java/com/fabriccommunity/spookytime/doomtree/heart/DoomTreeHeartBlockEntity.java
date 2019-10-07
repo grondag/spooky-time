@@ -22,8 +22,7 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 	final LongArrayFIFOQueue logQueue = new LongArrayFIFOQueue();
 	final LongArrayFIFOQueue trollQueue = new LongArrayFIFOQueue();
 	
-//	final Tendril tendril = new Tendril();
-	final SphericalRegionIterator area = new SphericalRegionIterator();
+	final Seeker seeker = new Seeker();
 
 	public DoomTreeHeartBlockEntity(BlockEntityType<?> entityType) {
 		super(entityType);
@@ -55,7 +54,7 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 		} else if (--tickCounter <= 0 && !trollQueue.isEmpty()) {
 			job = TrollJob.run(this);
 		} else {
-			area.apply(this);
+			seeker.apply(this);
 		}
 	}
 	

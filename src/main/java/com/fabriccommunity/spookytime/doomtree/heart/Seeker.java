@@ -1,14 +1,11 @@
 package com.fabriccommunity.spookytime.doomtree.heart;
 
-import java.util.Random;
+import java.util.BitSet;
 
 import com.fabriccommunity.spookytime.doomtree.DoomTree;
 import com.fabriccommunity.spookytime.registry.SpookyBlocks;
 
-import io.netty.util.internal.ThreadLocalRandom;
-import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntHeapPriorityQueue;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,14 +18,52 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class Seeker implements Job {
-	private final LongOpenHashSet done = new LongOpenHashSet();
-	private final LongArrayFIFOQueue todo = new LongArrayFIFOQueue();
-
-	private final LongArrayList solid = new LongArrayList(8);
-	private final LongArrayList air = new LongArrayList(8);
-
+	private final IntHeapPriorityQueue todo = new IntHeapPriorityQueue((i0, i1) -> Integer.compare(squaredDistance(i0), squaredDistance(i1)));
+	private final BitSet visited = new BitSet();
+	
 	static final Direction[] FACES = Direction.values();
-
+	static final int DIAMETER = 128;
+	static final int MIN = -63;
+	/** INCLUSIVE! */
+	static final int MAX = MIN + DIAMETER - 1;
+	
+	static int relativePos(final long heartPos, final int blockPos) {
+		return relativePos(
+				BlockPos.unpackLongX(heartPos), BlockPos.unpackLongY(heartPos), BlockPos.unpackLongZ(heartPos),
+				BlockPos.unpackLongX(blockPos), BlockPos.unpackLongY(blockPos), BlockPos.unpackLongZ(blockPos));
+	}
+	
+	static int relativePos(final int heartX, final int heartY, final int heartZ, final int x, final int y, final int z) {
+		final int dx = x - heartX - MIN;
+		final int dy = y - heartY - MIN;
+		final int dz = z - heartZ - MIN;
+		
+		return dx | (dy << 7) | (dz << 14);
+	}
+	
+	static int relativePos(final int dx, final int dy, final int dz) {
+		return (dx - MIN) | ((dy - MIN) << 7) | ((dz - MIN) << 14);
+	}
+	
+	static int rx(int relPos) {
+		return (relPos & 127) + MIN;
+	}
+	
+	static int ry(int relPos) {
+		return ((relPos >> 7) & 127) + MIN;
+	}
+	
+	static int rz(int relPos) {
+		return ((relPos >> 14) & 127) + MIN;
+	}
+	
+	static int squaredDistance(int relPos) {
+		final int x = rx(relPos);
+		final int y = ry(relPos);
+		final int z = rz(relPos);
+		return x * x + y * y + z * z;
+	}
+	
 	@Override
 	public Job apply(DoomTreeHeartBlockEntity heart) {
 		if (todo.isEmpty()) {
@@ -40,99 +75,70 @@ public class Seeker implements Job {
 	}
 
 	private void start(DoomTreeHeartBlockEntity heart) {
-		final long p = heart.getPos().asLong();
-		done.clear();
-		done.add(p);
-		todo.enqueue(BlockPos.offset(p, FACES[ThreadLocalRandom.current().nextInt(6)]));
+		visited.clear();
+		visited.set(relativePos(0, 0, 0));
+		
+		todo.enqueue(relativePos(-1, 0, 0));
+		todo.enqueue(relativePos(1, 0, 0));
+		todo.enqueue(relativePos(0, -1, 0));
+		todo.enqueue(relativePos(0, 1, 0));
+		todo.enqueue(relativePos(0, 0, -1));
+		todo.enqueue(relativePos(0, 0, 1));
 	}
 
 	private void process(DoomTreeHeartBlockEntity heart) {
 		final World world = heart.getWorld();
-		final BlockPos.Mutable mPos = heart.mPos;
 		final long origin = heart.getPos().asLong();
-		final Random rand = ThreadLocalRandom.current();
+		final int x = BlockPos.unpackLongX(origin);
+		final int y = BlockPos.unpackLongY(origin);
+		final int z = BlockPos.unpackLongZ(origin);
+		final BlockPos.Mutable mPos = heart.mPos;
 
-		long p = todo.dequeueLong();
+		int p = todo.dequeueInt();
 
 		for (int i = 0; i < 16; i++) {
-			if (!done.contains(p)) {
-				done.add(p);
-				BlockState currentState = world.getBlockState(mPos.set(p));
-				BlockState trollState = trollState(currentState);
-
-				if (trollState != null) {
-					if (trollState != currentState) {
-						heart.trollQueue.enqueue(p);
+			if (!visited.get(p)) {
+				visited.set(p);
+				mPos.set(x + rx(p), y + ry(p), z + rz(p));
+				
+				if (World.isValid(mPos) && world.isBlockLoaded(mPos)) {
+					BlockState currentState = world.getBlockState(mPos);
+					BlockState trollState = trollState(currentState);
+					
+					if (trollState != null) {
+						if (trollState != currentState) {
+							heart.trollQueue.enqueue(mPos.asLong());
+						}
+						
+						continueFrom(p);
 					}
-
-					continueFrom(world, origin, p, rand, mPos);
 				}
 			}
 
 			if (todo.isEmpty()) {
 				return;
 			} else {
-				p = todo.dequeueLong();
+				p = todo.dequeueInt();
 			}
 		}
 	}
 
-	private void continueFrom(World world, long originPos, long fromPos, Random rand, BlockPos.Mutable mPos) {
-		final int fromDist = squareDistance(originPos, fromPos);
-
-		if (fromDist > 32 * 32 && rand.nextInt(10) < 4) {
-			return;
-		}
-
-		final LongArrayList solid = this.solid;
-		final LongArrayList air = this.air;
-		solid.clear();
-		air.clear();
-
-		for (Direction face : FACES) {
-			final long pos = BlockPos.offset(fromPos, face);
-
-			if (done.contains(pos) || squareDistance(originPos, pos) < fromDist || !World.isValid(mPos.set(pos)) || !world.isBlockLoaded(mPos)) {
-				continue;
-			}
-
-			if (world.isAir(mPos)) {
-				air.add(pos);
-			} else {
-				solid.add(pos);
-			}
-		}
-
-		boolean canAirBranch = true;
-
-		if (!solid.isEmpty()) {
-			todo.enqueue(solid.removeLong(rand.nextInt(solid.size())));
-			if (rand.nextBoolean()) {
-				return;
-			}
-
-			if (!solid.isEmpty()) {
-				todo.enqueue(solid.removeLong(rand.nextInt(solid.size())));
-				return;
-			}
-
-			canAirBranch = false;
-		}
-
-		if (!air.isEmpty()) {
-			todo.enqueue(air.removeLong(rand.nextInt(air.size())));
-
-			if (canAirBranch && !air.isEmpty() && rand.nextBoolean()) {
-				todo.enqueue(air.removeLong(rand.nextInt(air.size())));
-			}
-		}
+	private void continueFrom(int relPos) {
+		final int rx = rx(relPos);
+		final int ry = ry(relPos);
+		final int rz = rz(relPos);
+		
+		if(rx > MIN) visitIfNeeded(relativePos(rx - 1, ry, rz));
+		if(ry > MIN) visitIfNeeded(relativePos(rx, ry - 1, rz));
+		if(rz > MIN) visitIfNeeded(relativePos(rx, ry, rz - 1));
+		
+		if(rx < MAX) visitIfNeeded(relativePos(rx + 1, ry, rz));
+		if(ry < MAX) visitIfNeeded(relativePos(rx, ry + 1, rz));
+		if(rz < MAX) visitIfNeeded(relativePos(rx, ry, rz + 1));
 	}
-
-	private int squareDistance(long fromPos, long toPos) {
-		final int dx = BlockPos.unpackLongX(fromPos) - BlockPos.unpackLongX(toPos);
-		final int dy = BlockPos.unpackLongY(fromPos) - BlockPos.unpackLongY(toPos);
-		final int dz = BlockPos.unpackLongZ(fromPos) - BlockPos.unpackLongZ(toPos);
-		return dx * dx + dy * dy + dz * dz;
+	
+	private void visitIfNeeded(int relPos) {
+		if (!visited.get(relPos)) todo.enqueue(relPos);
 	}
 
 	/**
