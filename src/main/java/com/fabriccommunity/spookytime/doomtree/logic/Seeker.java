@@ -1,4 +1,12 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
+
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.MAX;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.MIN;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.relativePos;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.rx;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.ry;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.rz;
+import static com.fabriccommunity.spookytime.doomtree.logic.RelativePos.squaredDistance;
 
 import java.util.BitSet;
 
@@ -22,47 +30,7 @@ public class Seeker implements Job {
 	private final BitSet visited = new BitSet();
 	
 	static final Direction[] FACES = Direction.values();
-	static final int DIAMETER = 128;
-	static final int MIN = -63;
-	/** INCLUSIVE! */
-	static final int MAX = MIN + DIAMETER - 1;
-	
-	static int relativePos(final long heartPos, final int blockPos) {
-		return relativePos(
-				BlockPos.unpackLongX(heartPos), BlockPos.unpackLongY(heartPos), BlockPos.unpackLongZ(heartPos),
-				BlockPos.unpackLongX(blockPos), BlockPos.unpackLongY(blockPos), BlockPos.unpackLongZ(blockPos));
-	}
-	
-	static int relativePos(final int heartX, final int heartY, final int heartZ, final int x, final int y, final int z) {
-		final int dx = x - heartX - MIN;
-		final int dy = y - heartY - MIN;
-		final int dz = z - heartZ - MIN;
-		
-		return dx | (dy << 7) | (dz << 14);
-	}
-	
-	static int relativePos(final int dx, final int dy, final int dz) {
-		return (dx - MIN) | ((dy - MIN) << 7) | ((dz - MIN) << 14);
-	}
-	
-	static int rx(int relPos) {
-		return (relPos & 127) + MIN;
-	}
-	
-	static int ry(int relPos) {
-		return ((relPos >> 7) & 127) + MIN;
-	}
-	
-	static int rz(int relPos) {
-		return ((relPos >> 14) & 127) + MIN;
-	}
-	
-	static int squaredDistance(int relPos) {
-		final int x = rx(relPos);
-		final int y = ry(relPos);
-		final int z = rz(relPos);
-		return x * x + y * y + z * z;
-	}
+
 	
 	@Override
 	public Job apply(DoomTreeHeartBlockEntity heart) {
@@ -107,7 +75,7 @@ public class Seeker implements Job {
 					
 					if (trollState != null) {
 						if (trollState != currentState) {
-							heart.trollQueue.enqueue(mPos.asLong());
+							heart.troll.enqueue(mPos.asLong());
 						}
 						
 						continueFrom(p);
@@ -161,7 +129,7 @@ public class Seeker implements Job {
 
 		final Material material = fromState.getMaterial();
 
-		if (TreeBuilder.canReplace(fromState)) {
+		if (TreeDesigner.canReplace(fromState)) {
 			if (block.matches(BlockTags.LOGS) && fromState.contains(PillarBlock.AXIS)) {
 				return DoomTree.DOOMED_LOG.getDefaultState().with(PillarBlock.AXIS, fromState.get(PillarBlock.AXIS));
 			} else if (block.matches(BlockTags.DIRT_LIKE)) {

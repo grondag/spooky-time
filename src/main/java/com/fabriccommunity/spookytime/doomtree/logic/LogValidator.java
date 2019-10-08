@@ -1,17 +1,17 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
-import static com.fabriccommunity.spookytime.doomtree.heart.TreeBuilder.canReplace;
+import static com.fabriccommunity.spookytime.doomtree.logic.TreeDesigner.canReplace;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
-class LogCheckJob implements Job {
+class LogValidator implements Job {
 	final LongArrayList blocks;
 	int index = 0;
 	final int limit;
 	
-	public LogCheckJob(DoomTreeHeartBlockEntity heart) {
+	public LogValidator(DoomTreeHeartBlockEntity heart) {
 		blocks = new LongArrayList(heart.logs.length + heart.branches.length);
 		blocks.addElements(0, heart.logs, 0, heart.logs.length);
 		blocks.addElements(heart.logs.length, heart.branches, 0, heart.branches.length);
@@ -27,8 +27,8 @@ class LogCheckJob implements Job {
 			heart.mPos.set(p);
 			final BlockState currentState = heart.getWorld().getBlockState(mPos);
 			 
-			if (TreeBuilder.logState(mPos, heart) != currentState && canReplace(heart.getWorld(), mPos)) {
-				heart.logQueue.enqueue(p);
+			if (TreeDesigner.logState(mPos, heart) != currentState && canReplace(heart.getWorld(), mPos)) {
+				heart.builder.enqueue(p);
 			}
 		}
 		

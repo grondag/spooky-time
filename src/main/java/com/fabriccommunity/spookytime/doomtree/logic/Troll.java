@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
 import com.fabriccommunity.spookytime.doomtree.DoomTree;
 import com.fabriccommunity.spookytime.doomtree.DoomTreePacket;
@@ -14,24 +14,32 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class TrollJob implements Job {
-	static Job run(DoomTreeHeartBlockEntity heart) {
+class Troll {
+	private final LongArrayFIFOQueue trollQueue = new LongArrayFIFOQueue();
+
+	boolean canTroll() {
+		return !trollQueue.isEmpty();
+	}
+
+	void enqueue(long pos) {
+		trollQueue.enqueue(pos);
+	}
+
+	void troll(DoomTreeHeartBlockEntity heart) {
 		final BlockPos.Mutable mPos = heart.mPos;
 		final World world = heart.getWorld();
-		final LongArrayFIFOQueue trollQueue = heart.trollQueue;
-
 		BlockState trollState = null;
 		BlockState currentState = null;
-		
+
 		long pos = 0;
 		boolean didUpdate = false;
-		
+
 		for (int i = 0; i < 8; i++) {
 			if(trollQueue.isEmpty()) {
-				return null;
+				return;
 			}
 
-			pos = heart.trollQueue.dequeueLong();
+			pos = trollQueue.dequeueLong();
 			mPos.set(pos);
 
 			if (!World.isValid(mPos) || !world.isBlockLoaded(mPos)) {
@@ -46,7 +54,7 @@ public abstract class TrollJob implements Job {
 				final Block block = trollState.getBlock();
 				if (block == DoomTree.MIASMA_BLOCK) {
 					placeMiasma(mPos, world);
-					
+
 					if (!currentState.isAir()) {
 						heart.power += 20;
 					}
@@ -59,13 +67,10 @@ public abstract class TrollJob implements Job {
 				}
 			}
 		}
-		
+
 		if (didUpdate) {
 			heart.markDirty();
 		}
-
-		
-		return null;
 	}
 
 	static BlockState MIASMA_STATE = DoomTree.MIASMA_BLOCK.getDefaultState();

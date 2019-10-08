@@ -1,4 +1,6 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree;
+
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeHeartBlockEntity;
 
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.Block;

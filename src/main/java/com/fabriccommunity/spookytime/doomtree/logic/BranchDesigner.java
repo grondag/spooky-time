@@ -1,8 +1,8 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
-import static com.fabriccommunity.spookytime.doomtree.heart.TreeBuilder.POINTS;
-import static com.fabriccommunity.spookytime.doomtree.heart.TreeBuilder.POINT_COUNT;
-import static com.fabriccommunity.spookytime.doomtree.heart.TreeBuilder.placeBranch;
+import static com.fabriccommunity.spookytime.doomtree.logic.TreeDesigner.POINTS;
+import static com.fabriccommunity.spookytime.doomtree.logic.TreeDesigner.POINT_COUNT;
+import static com.fabriccommunity.spookytime.doomtree.logic.TreeDesigner.placeBranch;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ import com.fabriccommunity.spookytime.doomtree.DoomLogBlock;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.util.math.BlockPos;
 
-class BuilderJob implements Job {
+class BranchDesigner implements Job {
 	final int x;
 	final int y;
 	final int z;
@@ -25,7 +25,7 @@ class BuilderJob implements Job {
 
 	int h = DoomLogBlock.TERMINAL_HEIGHT + 1;
 
-	BuilderJob (DoomTreeHeartBlockEntity heart) {
+	BranchDesigner (DoomTreeHeartBlockEntity heart) {
 		final BlockPos pos = heart.getPos();
 		x = pos.getX();
 		y = pos.getY();
@@ -34,7 +34,7 @@ class BuilderJob implements Job {
 		origin = pos.asLong();
 		points.addElements(0, POINTS, 0, POINT_COUNT);
 		rand.setSeed(origin);
-		centerHeight = TreeBuilder.centerHeight(pos);
+		centerHeight = TreeDesigner.centerHeight(pos);
 
 		final PositionCollector blocks = this.blocks;
 		for (long p : heart.logs) {
@@ -71,7 +71,7 @@ class BuilderJob implements Job {
 
 			heart.branches = blocks.toLongArray();
 			heart.markDirty();
-			return new LogCheckJob(heart);
+			return new LogValidator(heart);
 		} else {
 			return this;
 		}

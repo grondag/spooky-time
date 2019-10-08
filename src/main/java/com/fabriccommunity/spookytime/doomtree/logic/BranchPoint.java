@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;

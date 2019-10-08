@@ -1,9 +1,8 @@
 package com.fabriccommunity.spookytime.doomtree;
 
 import com.fabriccommunity.spookytime.SpookyTime;
-import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeFeature;
-import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeHeartBlock;
-import com.fabriccommunity.spookytime.doomtree.heart.DoomTreeHeartBlockEntity;
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeFeature;
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeHeartBlockEntity;
 import com.fabriccommunity.spookytime.registry.SpookyBlocks;
 import com.fabriccommunity.spookytime.registry.SpookyFeatures;
 
@@ -40,7 +39,9 @@ public class DoomTree {
 			new DoomLogBlock.Height(logSettings().dropsLike(PLACED_DOOM_LOG_CHANNEL).build(), 0.02f));
 	public static Block DOOM_LOG_TERMINAL = Registry.register(Registry.BLOCK, SpookyTime.id("doom_log_terminal"), 
 			new DoomLogBlock(logSettings().dropsLike(PLACED_DOOM_LOG_TERMINAL).build(), false, 0.02f));
-
+	
+	public static Block DOOM_LEAF = SpookyBlocks.register("doom_leaves", new DoomLeafBlock(doomedSettings(), false, 1));
+	
 	public static Block DOOMED_LOG = SpookyBlocks.register("doomed_log", new PillarBlock(doomedSettings()));
 	public static Block DOOMED_EARTH = SpookyBlocks.register("doomed_earth", new Block(doomedSettings()));
 	public static Block DOOMED_STONE = SpookyBlocks.register("doomed_stone", new Block(doomedSettings()));

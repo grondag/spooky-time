@@ -1,10 +1,9 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
 import java.util.Random;
 
 import com.fabriccommunity.spookytime.doomtree.DoomTree;
 
-import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
@@ -19,10 +18,11 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 	
 	Job job = null;
 	final BlockPos.Mutable mPos = new BlockPos.Mutable();
-	final LongArrayFIFOQueue logQueue = new LongArrayFIFOQueue();
-	final LongArrayFIFOQueue trollQueue = new LongArrayFIFOQueue();
 	
+	final Builder builder = new Builder();
 	final Seeker seeker = new Seeker();
+	final Troll troll = new Troll();
+	final LeafMaker leafMaker = new LeafMaker();
 
 	public DoomTreeHeartBlockEntity(BlockEntityType<?> entityType) {
 		super(entityType);
@@ -49,13 +49,23 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 	}
 
 	void idle() {
-		if (power >= 100 && !logQueue.isEmpty()) {
-			job = Jobs.place(this);
-		} else if (--tickCounter <= 0 && !trollQueue.isEmpty()) {
-			job = TrollJob.run(this);
-		} else {
-			seeker.apply(this);
+		final boolean canBuild = builder.canBuild();
+		
+		if (!canBuild) {
+			leafMaker.run(this);
 		}
+		
+//		if (--tickCounter <= 0) {
+			if (power >= 100 && canBuild) {
+				builder.build(this);
+				return;
+			} else if (troll.canTroll()) {
+				troll.troll(this);
+				return;
+			}
+//		} else {
+			seeker.apply(this);
+//		}
 	}
 	
 	void resetTickCounter(Random r) {
@@ -65,7 +75,7 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 	void setTemplate(long[] blocks) {
 		this.logs = blocks;
 		this.branches = null;
-		job = new BuilderJob(this);
+		job = new BranchDesigner(this);
 		this.markDirty();
 	}
 
@@ -82,7 +92,7 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 		branches = tag.containsKey(BRANCH_KEY) ? tag.getLongArray(BRANCH_KEY) : null;
 
 		if (logs != null) {
-			job = branches == null ? new BuilderJob(this) : new LogCheckJob(this);
+			job = branches == null ? new BranchDesigner(this) : new LogValidator(this);
 		}
 	}
 

@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -45,7 +45,7 @@ public class DoomTreeFeature extends Feature<DefaultFeatureConfig> {
 		final int y = posIn.getY();
 		final int z = posIn.getZ();
 
-		final int centerHeight = TreeBuilder.centerHeight(posIn);
+		final int centerHeight = TreeDesigner.centerHeight(posIn);
 
 		if (!placeTrunkSection(world, blocks, mPos.set(x, y - 1, z), centerHeight)) return false;
 		if (!placeTrunkSection(world, blocks, mPos.set(x - 1, y - 1, z), centerHeight - rand.nextInt(5) - 1)) return false;
@@ -100,7 +100,7 @@ public class DoomTreeFeature extends Feature<DefaultFeatureConfig> {
 	}
 
 	protected static boolean placeTrunk(IWorld world, PositionCollector blocks, BlockPos.Mutable pos) {
-		if (TreeBuilder.canReplace(world, pos)) {
+		if (TreeDesigner.canReplace(world, pos)) {
 			blocks.add(pos.asLong());
 			return true;
 		} else {

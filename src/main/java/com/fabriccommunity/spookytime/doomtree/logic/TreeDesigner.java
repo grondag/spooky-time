@@ -1,4 +1,4 @@
-package com.fabriccommunity.spookytime.doomtree.heart;
+package com.fabriccommunity.spookytime.doomtree.logic;
 
 import java.util.Random;
 
@@ -15,7 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 
-class TreeBuilder {
+class TreeDesigner {
 	static final int MAX_GEN_HEIGHT = 48;
 
 	static boolean canReplace(IWorld world, BlockPos pos) {

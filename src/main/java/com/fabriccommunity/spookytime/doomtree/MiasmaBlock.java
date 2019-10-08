@@ -27,8 +27,8 @@ public class MiasmaBlock extends Block {
 		return VoxelShapes.empty();
 	}
 
-	@Override
-	public int getLightSubtracted(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
-		return 1;
-	}
+//	@Override
+//	public int getLightSubtracted(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
+//		return 1;
+//	}
 }
