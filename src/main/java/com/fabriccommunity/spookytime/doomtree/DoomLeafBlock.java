@@ -1,6 +1,7 @@
 package com.fabriccommunity.spookytime.doomtree;
 
-import net.fabricmc.fabric.api.tools.FabricToolTags;
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeTracker;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
@@ -9,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class DoomLeafBlock extends Block {
 
@@ -36,7 +38,7 @@ public class DoomLeafBlock extends Block {
 
 		final ItemStack stack = player.inventory.getInvStack(player.inventory.selectedSlot);
 
-		if (stack.isEmpty() || !FabricToolTags.AXES.contains(stack.getItem()) || !stack.hasEnchantments()) {
+		if (stack.isEmpty() || !stack.hasEnchantments()) {
 			return 0;
 		}
 
@@ -66,5 +68,14 @@ public class DoomLeafBlock extends Block {
 	@Override
 	public int getLightSubtracted(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
 		return 1;
+	}
+	
+	@Override
+	public void onBlockRemoved(BlockState myState, World world, BlockPos blockPos, BlockState newState, boolean someFlag) {
+		super.onBlockRemoved(myState, world, blockPos, newState, someFlag);
+		
+		if (!world.isClient) {
+			DoomTreeTracker.reportBreak(world, blockPos, false);
+		}
 	}
 }

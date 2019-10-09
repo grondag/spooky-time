@@ -3,15 +3,16 @@ package com.fabriccommunity.spookytime.doomtree;
 import com.fabriccommunity.spookytime.SpookyTime;
 import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeFeature;
 import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeHeartBlockEntity;
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeTracker;
 import com.fabriccommunity.spookytime.registry.SpookyBlocks;
 import com.fabriccommunity.spookytime.registry.SpookyFeatures;
 
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.block.PillarBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
@@ -42,9 +43,9 @@ public class DoomTree {
 	
 	public static Block DOOM_LEAF = SpookyBlocks.register("doom_leaves", new DoomLeafBlock(doomedSettings(), false, 1));
 	
-	public static Block DOOMED_LOG = SpookyBlocks.register("doomed_log", new PillarBlock(doomedSettings()));
-	public static Block DOOMED_EARTH = SpookyBlocks.register("doomed_earth", new Block(doomedSettings()));
-	public static Block DOOMED_STONE = SpookyBlocks.register("doomed_stone", new Block(doomedSettings()));
+	public static Block DOOMED_LOG = SpookyBlocks.register("doomed_log", new DoomedLogBlock(doomedSettings()));
+	public static Block DOOMED_EARTH = SpookyBlocks.register("doomed_earth", new DoomedBlock(doomedSettings()));
+	public static Block DOOMED_STONE = SpookyBlocks.register("doomed_stone", new DoomedBlock(doomedSettings()));
 	
 	public static final BlockEntityType<DoomTreeHeartBlockEntity> HAUNTED_TREE = 
 			Registry.register(Registry.BLOCK_ENTITY, SpookyTime.id("doom_tree"), BlockEntityType.Builder.create(DoomTreeHeartBlockEntity::new, DOOM_TREE_HEART).build(null));
@@ -56,7 +57,7 @@ public class DoomTree {
 	public static Tag<Block> DOOM_TREE_IGNORED = TagRegistry.block(SpookyTime.id("doom_tree_ignored"));
 
 	public static void init() {
-
+		ServerStopCallback.EVENT.register(s -> DoomTreeTracker.clear());
 	}
 
 	private static FabricBlockSettings logSettings() {

@@ -33,6 +33,24 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 	}
 
 	@Override
+	public void validate() {
+		super.validate();
+		
+		if (world !=null  && !world.isClient) {
+			DoomTreeTracker.track(world, pos);
+		}
+	}
+	
+	@Override
+	public void invalidate() {
+		if (world !=null  && !world.isClient) {
+			DoomTreeTracker.untrack(world, pos);
+		}
+		
+		super.invalidate();
+	}
+
+	@Override
 	public void tick() {
 		if (world == null || logs == null || world.isClient) {
 			return;
@@ -110,6 +128,14 @@ public class DoomTreeHeartBlockEntity extends BlockEntity implements Tickable {
 		}
 
 		return tag;
+	}
+
+	public void reportBreak(BlockPos pos, boolean isLog) {
+		if (isLog) {
+			builder.enqueue(pos.asLong());
+		} else {
+			troll.enqueue(pos.asLong());
+		}
 	}
 }
 

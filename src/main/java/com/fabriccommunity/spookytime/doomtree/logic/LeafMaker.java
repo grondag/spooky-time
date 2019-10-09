@@ -63,7 +63,7 @@ public class LeafMaker {
 		
 		do {
 			x = 1 + r.nextInt(8);
-			y = 1 + r.nextInt(8);
+			y = r.nextInt(8);
 			z = 1 + r.nextInt(8);
 		} while (x * x + y * y + z * z > 64);
 		

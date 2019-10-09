@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 class Builder {
-	final LongArrayFIFOQueue logQueue = new LongArrayFIFOQueue();
+	final LongArrayFIFOQueue buildQueue = new LongArrayFIFOQueue();
 	
 	void build(DoomTreeHeartBlockEntity heart) {
 		final World world = heart.getWorld();
@@ -17,11 +17,10 @@ class Builder {
 		boolean didPlace= false;
 
 		for (int i = 0; i < 8; i++) {
-			if (heart.power >= 100 && !logQueue.isEmpty()) {
-				final long p = logQueue.dequeueLong();
-				mPos.set(p);
-				BlockState currentState = world.getBlockState(mPos);
-				BlockState targetState = TreeDesigner.logState(mPos, heart);
+			if (heart.power >= 100 && !buildQueue.isEmpty()) {
+				mPos.set(buildQueue.dequeueLong());
+				final BlockState currentState = world.getBlockState(mPos);
+				final BlockState targetState = TreeDesigner.logState(mPos, heart);
 
 				if (targetState != currentState && canReplace(world, mPos)) {
 					world.setBlockState(mPos, targetState, 18);
@@ -37,10 +36,10 @@ class Builder {
 	}
 
 	boolean canBuild() {
-		return !logQueue.isEmpty();
+		return !buildQueue.isEmpty();
 	}
 
 	void enqueue(long pos) {
-		logQueue.enqueue(pos);
+		buildQueue.enqueue(pos);
 	}
 }

@@ -1,5 +1,7 @@
 package com.fabriccommunity.spookytime.doomtree;
 
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeTracker;
+
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -10,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class MiasmaBlock extends Block {
 
@@ -27,8 +30,12 @@ public class MiasmaBlock extends Block {
 		return VoxelShapes.empty();
 	}
 
-//	@Override
-//	public int getLightSubtracted(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1) {
-//		return 1;
-//	}
+	@Override
+	public void onBlockRemoved(BlockState myState, World world, BlockPos blockPos, BlockState newState, boolean someFlag) {
+		super.onBlockRemoved(myState, world, blockPos, newState, someFlag);
+		
+		if (!world.isClient) {
+			DoomTreeTracker.reportBreak(world, blockPos, false);
+		}
+	}
 }
