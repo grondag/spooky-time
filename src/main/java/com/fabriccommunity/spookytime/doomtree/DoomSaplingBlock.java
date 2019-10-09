@@ -3,6 +3,7 @@ package com.fabriccommunity.spookytime.doomtree;
 import java.util.Random;
 
 import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeFeature;
+import com.fabriccommunity.spookytime.doomtree.logic.DoomTreeTracker;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -61,14 +62,20 @@ public class DoomSaplingBlock extends PlantBlock implements Fertilizable {
 		return true;
 	}
 
+	public boolean isValidGrowLocation(World world, BlockPos pos) {
+		return !world.isClient && DoomTreeTracker.canGrow(world, pos);
+	}
+	
 	@Override
 	public boolean canGrow(World world, Random random, BlockPos blockPos, BlockState blockState) {
-		return world.random.nextFloat() < 0.45f;
+		return isValidGrowLocation(world, blockPos) && world.random.nextFloat() < 0.45f;
 	}
 
 	@Override
 	public void grow(World world, Random random, BlockPos blockPos, BlockState blockState) {
-		generate(world, blockPos, blockState, random);
+		if (isValidGrowLocation(world, blockPos)) {
+			generate(world, blockPos, blockState, random);
+		}
 	}
 
 	@Override

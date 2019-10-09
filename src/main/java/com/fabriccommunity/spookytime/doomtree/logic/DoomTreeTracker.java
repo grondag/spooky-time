@@ -26,15 +26,21 @@ public final class DoomTreeTracker {
 		}
 		
 		boolean isNear(BlockPos pos) {
+			return squareDistance(pos) <=  LIMIT;
+		}
+		
+		int squareDistance(BlockPos pos) {
 			final int dx = pos.getX() - x;
 			final int dy = pos.getY() - y;
 			final int dz = pos.getZ() - z;
 			
-			return (dx * dx + dy * dy + dz * dz <=  LIMIT);
+			return dx * dx + dy * dy + dz * dz;
 		}
 	}
 	
 	static final int LIMIT = RelativePos.MAX * RelativePos.MAX;
+	
+	static final int GROW_LIMIT = LIMIT * 4;
 	
 	// TODO: make configurable
 	static final int MAX_TREES = 3;
@@ -103,6 +109,20 @@ public final class DoomTreeTracker {
 				((DoomTreeHeartBlockEntity) be).reportBreak(pos, isLog);
 			}
 		}
+	}
+
+	public static boolean canGrow(World world, BlockPos pos) {
+		if (TREES.size() >= MAX_TREES || (255 - pos.getY()) < RelativePos.MAX) return false;
+		
+		final int dim = world.dimension.getType().getRawId();
+		
+		for (TreeData t : TREES) {
+			if (t.dimId == dim && t.squareDistance(pos) < GROW_LIMIT) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 }
